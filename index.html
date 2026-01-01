@@ -525,6 +525,22 @@
             display: block;
         }
 
+        /* Support page should appear instantly without animation to prevent choppy resize */
+        #support {
+            animation: none !important;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -846,7 +862,16 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             box-shadow: 0 10px 40px -10px rgba(239, 68, 68, 0.7);
-            transition: all 0.3s ease;
+            transition: all 0.3s ease, opacity 0.5s ease, transform 0.5s ease;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Smooth fade out when hidden */
+        .support-button.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
         }
 
         .support-button:hover {
@@ -3511,20 +3536,25 @@
         .support-page-container {
             display: flex;
             gap: 0;
-            height: calc(100vh - 100px);
+            height: calc(100vh - 81px);
             overflow: hidden;
+            position: fixed;
+            top: 81px;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
 
         /* FAQ Section (Left 65%) */
         .faq-section {
             width: 65%;
-            padding: 40px;
+            padding: 50px 40px 40px 40px;
             overflow-y: auto;
             background: rgba(10, 10, 10, 0.5);
         }
 
         .faq-header {
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .help-center-badge {
@@ -3536,7 +3566,7 @@
             font-weight: 700;
             color: #FFD700;
             letter-spacing: 1px;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             cursor: default;
         }
 
@@ -3544,7 +3574,7 @@
             font-size: 48px;
             font-weight: 700;
             color: #FFFFFF;
-            margin: 0 0 12px 0;
+            margin: 0 0 8px 0;
             letter-spacing: -1px;
         }
 
@@ -3557,7 +3587,7 @@
 
         .faq-search-container {
             position: relative;
-            margin: 32px 0;
+            margin: 20px 0;
         }
 
         .search-icon-left {
@@ -3595,7 +3625,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 32px;
+            margin-bottom: 20px;
         }
 
         .faq-category-btn {
@@ -3747,9 +3777,73 @@
             background: rgba(5, 5, 5, 0.8);
             border-left: 2px solid rgba(255, 215, 0, 0.2);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 40px;
+            justify-content: flex-start;
+            padding: 30px 30px 40px 30px;
+        }
+
+        .chat-widget-wrapper {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .chat-header {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .chat-header-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .chat-header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .chat-widget-embed {
+            width: fit-content;
+            max-width: 100%;
+            height: auto;
+            min-height: 500px;
+            max-height: 650px;
+            background: rgba(10, 10, 10, 0.3);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .chat-widget-embed #tawk_695452bda6d2071982ebf8aa {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        /* Force Tawk.to iframe to fit inside container */
+        .chat-widget-embed iframe {
+            border-radius: 14px !important;
+            max-width: 100% !important;
+            display: block !important;
+        }
+
+        /* Hide Tawk.to default positioning */
+        .chat-widget-embed #tawk_695452bda6d2071982ebf8aa > div {
+            border-radius: 14px;
+            overflow: hidden;
         }
 
         .chat-widget-placeholder {
@@ -4572,14 +4666,14 @@
 
                     <!-- Right Side: Chat Widget Area (35%) -->
                     <div class="chat-widget-container">
-                        <div class="chat-widget-placeholder">
-                            <div class="chat-placeholder-icon">💬</div>
-                            <h3 class="chat-placeholder-title">Priority Support</h3>
-                            <p class="chat-placeholder-text">Live chat support is available here</p>
-                            <div class="chat-placeholder-box">
-                                <div class="chat-placeholder-label">Chat Widget Embed Area</div>
-                                <div class="chat-placeholder-dims">35% width × Full height</div>
-                                <div class="chat-placeholder-note">Add your chat widget embed code here</div>
+                        <div class="chat-widget-wrapper">
+                            <div class="chat-header">
+                                <div class="chat-header-icon">💬</div>
+                                <h3 class="chat-header-title">VIP Support</h3>
+                            </div>
+                            <div class="chat-widget-embed">
+                                <!-- Tawk.to Chat Widget -->
+                                <div id='tawk_695452bda6d2071982ebf8aa'></div>
                             </div>
                         </div>
                     </div>
@@ -5079,6 +5173,16 @@
             });
             document.getElementById(pageName).classList.add('active');
 
+            // Hide/show support button based on page
+            const supportButton = document.querySelector('.support-button');
+            if (supportButton) {
+                if (pageName === 'support') {
+                    supportButton.classList.add('hidden');
+                } else {
+                    supportButton.classList.remove('hidden');
+                }
+            }
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -5124,8 +5228,8 @@
 
         // Open chat support widget
         function openChatSupport() {
-            // Navigate to support page
-            showPage('support');
+            // Navigate to support page using the same function as nav items
+            navigateToPage('support');
         }
 
         // ============================================
@@ -6235,6 +6339,7 @@
         window.showVideoDetail = showVideoDetail;
         window.logout = logout;
         window.logoutAdmin = logoutAdmin;
+        window.navigateToPage = navigateToPage;
         window.openChatSupport = openChatSupport;
         window.sendAnnouncement = sendAnnouncement;
         window.createNewUser = createNewUser;
@@ -6677,6 +6782,42 @@
             </div>
         </div>
     </div>
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+    var Tawk_API = Tawk_API || {};
+    var Tawk_LoadStart = new Date();
+    
+    // Set embedded mode and container
+    Tawk_API.embedded = 'tawk_695452bda6d2071982ebf8aa';
+    
+    // Customize appearance to fit container
+    Tawk_API.customStyle = {
+        visibility : {
+            desktop : {
+                position : 'br',
+                xOffset : 0,
+                yOffset : 0
+            },
+            mobile : {
+                position : 'br',
+                xOffset : 0,
+                yOffset : 0
+            }
+        }
+    };
+    
+    (function(){
+        var s1 = document.createElement("script");
+        var s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/695452bda6d2071982ebf8aa/1jdtsqmsm';
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!--End of Tawk.to Script-->
 
 </body>
 </html>
