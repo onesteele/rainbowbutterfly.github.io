@@ -2128,6 +2128,49 @@ chat='true'>
             overflow: hidden;
         }
 
+        /* Channel Tabs */
+        .channel-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.1);
+            padding-bottom: 8px;
+        }
+
+        .channel-tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(26, 26, 26, 0.6);
+            border: 2px solid rgba(255, 215, 0, 0.15);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .channel-tab:hover {
+            background: rgba(26, 26, 26, 0.8);
+            border-color: rgba(255, 215, 0, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .channel-tab.active {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.5);
+            color: #FFD700;
+        }
+
+        .channel-tab-icon {
+            font-size: 18px;
+            color: #FFD700;
+        }
+
         .channel-header {
             padding: 24px 32px;
             border-bottom: 2px solid rgba(255, 215, 0, 0.15);
@@ -2836,9 +2879,8 @@ chat='true'>
         }
     </style>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Animated Background -->
@@ -3132,8 +3174,25 @@ chat='true'>
                 <h1 class="page-title">Announcements</h1>
                 <p class="page-subtitle">Stay updated with the latest news and insights</p>
 
+                <!-- Channel Tabs -->
+                <div class="channel-tabs">
+                    <button class="channel-tab active" onclick="switchChannel('general-updates')">
+                        <span class="channel-tab-icon">#</span>
+                        <span>general-updates</span>
+                    </button>
+                    <button class="channel-tab" onclick="switchChannel('algo-recaps')">
+                        <span class="channel-tab-icon">#</span>
+                        <span>algo-recaps</span>
+                    </button>
+                    <button class="channel-tab" onclick="switchChannel('algo-announcements')">
+                        <span class="channel-tab-icon">#</span>
+                        <span>algo-announcements</span>
+                    </button>
+                </div>
+
                 <div class="announcements-container">
-                    <div class="announcements-channel">
+                    <!-- General Updates Channel -->
+                    <div class="announcements-channel" id="channel-general-updates">
                         <div class="channel-header">
                             <div class="channel-info">
                                 <div class="channel-icon">#</div>
@@ -3142,129 +3201,38 @@ chat='true'>
                             <div class="channel-description">Latest platform updates and announcements</div>
                         </div>
 
-                        <div class="messages-container">
-                            <!-- Message 1 -->
-                            <div class="message">
-                                <div class="message-avatar">
-                                    <div class="avatar-icon"><img src="PIlogo.png" alt="PI"></div>
-                                </div>
-                                <div class="message-content">
-                                    <div class="message-header">
-                                        <span class="message-author">Profit Insider Team</span>
-                                        <span class="message-badge">Admin</span>
-                                        <span class="message-timestamp">Today at 10:30 AM</span>
-                                    </div>
-                                    <div class="message-body">
-                                        <p><strong>🎉 New Feature Alert!</strong></p>
-                                        <p>We're excited to announce the launch of our advanced portfolio analytics dashboard. You can now track your performance metrics in real-time with enhanced visualizations and detailed breakdowns.</p>
-                                        <div class="message-attachment">
-                                            <div class="attachment-icon">📊</div>
-                                            <div class="attachment-info">
-                                                <div class="attachment-title">Portfolio Analytics v2.0</div>
-                                                <div class="attachment-subtitle">Now available in your dashboard</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="message-reactions">
-                                        <div class="reaction">🔥 24</div>
-                                        <div class="reaction">💎 18</div>
-                                        <div class="reaction">🚀 31</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="messages-container" id="messages-general-updates">
+                            <!-- Messages will be loaded dynamically from Firebase -->
+                        </div>
+                    </div>
 
-                            <!-- Message 2 -->
-                            <div class="message">
-                                <div class="message-avatar">
-                                    <div class="avatar-icon"><img src="PIlogo.png" alt="PI"></div>
-                                </div>
-                                <div class="message-content">
-                                    <div class="message-header">
-                                        <span class="message-author">Profit Insider Team</span>
-                                        <span class="message-badge">Admin</span>
-                                        <span class="message-timestamp">Yesterday at 3:15 PM</span>
-                                    </div>
-                                    <div class="message-body">
-                                        <p><strong>📈 Market Update</strong></p>
-                                        <p>Significant opportunities detected in the technology sector. Our AI algorithms have identified 3 high-confidence trades with favorable risk/reward ratios. Check your notifications for detailed analysis.</p>
-                                    </div>
-                                    <div class="message-reactions">
-                                        <div class="reaction">📈 42</div>
-                                        <div class="reaction">💰 27</div>
-                                    </div>
-                                </div>
+                    <!-- Algo Recaps Channel -->
+                    <div class="announcements-channel" id="channel-algo-recaps" style="display: none;">
+                        <div class="channel-header">
+                            <div class="channel-info">
+                                <div class="channel-icon">#</div>
+                                <h2>algo-recaps</h2>
                             </div>
+                            <div class="channel-description">Daily algorithm performance recaps and insights</div>
+                        </div>
 
-                            <!-- Message 3 -->
-                            <div class="message">
-                                <div class="message-avatar">
-                                    <div class="avatar-icon"><img src="PIlogo.png" alt="PI"></div>
-                                </div>
-                                <div class="message-content">
-                                    <div class="message-header">
-                                        <span class="message-author">Profit Insider Team</span>
-                                        <span class="message-badge">Admin</span>
-                                        <span class="message-timestamp">Dec 25 at 9:00 AM</span>
-                                    </div>
-                                    <div class="message-body">
-                                        <p><strong>🎄 Holiday Trading Schedule</strong></p>
-                                        <p>Please note that our support team will have limited availability during the holiday period. Emergency support remains available 24/7. Happy holidays from all of us at Profit Insider!</p>
-                                    </div>
-                                    <div class="message-reactions">
-                                        <div class="reaction">🎄 56</div>
-                                        <div class="reaction">❤️ 89</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="messages-container" id="messages-algo-recaps">
+                            <!-- Messages will be loaded dynamically from Firebase -->
+                        </div>
+                    </div>
 
-                            <!-- Message 4 -->
-                            <div class="message">
-                                <div class="message-avatar">
-                                    <div class="avatar-icon"><img src="PIlogo.png" alt="PI"></div>
-                                </div>
-                                <div class="message-content">
-                                    <div class="message-header">
-                                        <span class="message-author">Profit Insider Team</span>
-                                        <span class="message-badge">Admin</span>
-                                        <span class="message-timestamp">Dec 20 at 11:45 AM</span>
-                                    </div>
-                                    <div class="message-body">
-                                        <p><strong>⚡ System Upgrade Complete</strong></p>
-                                        <p>We've successfully completed our infrastructure upgrade. You should notice faster load times and improved reliability across all features. Thank you for your patience!</p>
-                                        <ul>
-                                            <li>40% faster data processing</li>
-                                            <li>Enhanced security protocols</li>
-                                            <li>Improved mobile experience</li>
-                                        </ul>
-                                    </div>
-                                    <div class="message-reactions">
-                                        <div class="reaction">⚡ 34</div>
-                                        <div class="reaction">👍 51</div>
-                                    </div>
-                                </div>
+                    <!-- Algo Announcements Channel -->
+                    <div class="announcements-channel" id="channel-algo-announcements" style="display: none;">
+                        <div class="channel-header">
+                            <div class="channel-info">
+                                <div class="channel-icon">#</div>
+                                <h2>algo-announcements</h2>
                             </div>
+                            <div class="channel-description">Important algorithm updates and notifications</div>
+                        </div>
 
-                            <!-- Message 5 -->
-                            <div class="message">
-                                <div class="message-avatar">
-                                    <div class="avatar-icon"><img src="PIlogo.png" alt="PI"></div>
-                                </div>
-                                <div class="message-content">
-                                    <div class="message-header">
-                                        <span class="message-author">Profit Insider Team</span>
-                                        <span class="message-badge">Admin</span>
-                                        <span class="message-timestamp">Dec 18 at 2:30 PM</span>
-                                    </div>
-                                    <div class="message-body">
-                                        <p><strong>📚 New Educational Content</strong></p>
-                                        <p>5 new advanced trading strategy videos have been added to the Video Library. Topics include options strategies, risk management, and technical analysis fundamentals.</p>
-                                    </div>
-                                    <div class="message-reactions">
-                                        <div class="reaction">📚 28</div>
-                                        <div class="reaction">🎓 19</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="messages-container" id="messages-algo-announcements">
+                            <!-- Messages will be loaded dynamically from Firebase -->
                         </div>
                     </div>
                 </div>
@@ -3337,28 +3305,20 @@ chat='true'>
 
     <script>
         // ============================================
-        // FIREBASE CONFIGURATION
+        // SUPABASE CONFIGURATION
         // ============================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDk2_y0Qb5IMSzdUiJODWG9SYVpfbFak4w",
-            authDomain: "profit-insider-dash.firebaseapp.com",
-            databaseURL: "https://profit-insider-dash-default-rtdb.firebaseio.com",
-            projectId: "profit-insider-dash",
-            storageBucket: "profit-insider-dash.firebasestorage.app",
-            messagingSenderId: "754027861590",
-            appId: "1:754027861590:web:1f03c1e9e2df72dbcfcdf7",
-            measurementId: "G-H5G1Q4G863"
-        };
+        // Get your keys from: https://app.supabase.com/project/_/settings/api
+        const SUPABASE_URL = 'https://ztuwblktrssupogcxamz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0dXdibGt0cnNzdXBvZ2N4YW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcyOTMyOTgsImV4cCI6MjA4Mjg2OTI5OH0.9HtyuKU4h8nBOHsp-M1S21y2EU3_rurdyj3w_pBu7sc';
 
-        // Initialize Firebase
-        let database;
+        // Initialize Supabase
+        let supabase;
         try {
-            firebase.initializeApp(firebaseConfig);
-            database = firebase.database();
-            console.log('✅ Firebase connected successfully!');
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('✅ Supabase connected successfully!');
         } catch (error) {
-            console.error('❌ Firebase initialization error:', error);
-            alert('Firebase not configured. Please add your Firebase config.');
+            console.error('❌ Supabase initialization error:', error);
+            alert('Supabase not configured. Please add your Supabase credentials.');
         }
 
         // Video data
@@ -3590,70 +3550,70 @@ chat='true'>
                     return;
                 }
 
-                // Check Firebase database for user credentials
+                // Check Supabase database for user credentials
                 loginText.innerHTML = '<div class="loading-spinner"></div>';
                 loginBtn.classList.add('loading');
 
-                if (!database) {
-                    // Firebase not available - show error
+                if (!supabase) {
+                    // Supabase not available - show error
                     showLoginError('System Error - Please contact support');
                     return;
                 }
 
-                // Query Firebase for matching user
-                database.ref('users').orderByChild('username').equalTo(username).once('value')
-                    .then((snapshot) => {
-                        if (snapshot.exists()) {
-                            let validUser = null;
-                            let userKey = null;
-                            snapshot.forEach((childSnapshot) => {
-                                const user = childSnapshot.val();
-                                // Check password and status
-                                if (user.password === password) {
-                                    if (user.status === 'active') {
-                                        validUser = user;
-                                        userKey = childSnapshot.key;
-                                        // Update last login
-                                        database.ref('users/' + childSnapshot.key).update({
-                                            lastLogin: new Date().toLocaleString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric',
-                                                year: 'numeric',
-                                                hour: 'numeric',
-                                                minute: '2-digit',
-                                                hour12: true
-                                            })
-                                        });
-                                    }
-                                }
-                            });
-
-                            if (validUser) {
-                                if (validUser.status === 'active') {
-                                    // Check if user has admin role
-                                    if (validUser.role === 'admin') {
-                                        // Admin user - redirect to admin panel
-                                        setTimeout(() => {
-                                            loginScreen.classList.add('hidden');
-                                            document.getElementById('adminPage').classList.add('visible');
-                                            loginBtn.classList.remove('loading');
-                                            loginText.textContent = 'Access Platform';
-                                        }, 1500);
-                                    } else {
-                                        // Regular user - proceed to client dashboard
-                                        performClientLogin();
-                                    }
-                                } else {
-                                    // User account is inactive
-                                    showLoginError('Account Inactive');
-                                }
-                            } else {
-                                // Password incorrect
-                                showLoginError();
-                            }
-                        } else {
+                // Query Supabase for matching user
+                supabase
+                    .from('users')
+                    .select('*')
+                    .eq('username', username)
+                    .single()
+                    .then(({ data: user, error }) => {
+                        if (error || !user) {
                             // Username not found
                             showLoginError();
+                            return;
+                        }
+
+                        // Check password and status
+                        if (user.password !== password) {
+                            // Password incorrect
+                            showLoginError();
+                            return;
+                        }
+
+                        if (user.status !== 'active') {
+                            // User account is inactive
+                            showLoginError('Account Inactive');
+                            return;
+                        }
+
+                        // Update last login
+                        const lastLoginTime = new Date().toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                        });
+
+                        supabase
+                            .from('users')
+                            .update({ last_login: lastLoginTime })
+                            .eq('id', user.id)
+                            .then(() => console.log('Last login updated'));
+
+                        // Check if user has admin role
+                        if (user.role === 'admin') {
+                            // Admin user - redirect to admin panel
+                            setTimeout(() => {
+                                loginScreen.classList.add('hidden');
+                                document.getElementById('adminPage').classList.add('visible');
+                                loginBtn.classList.remove('loading');
+                                loginText.textContent = 'Access Platform';
+                            }, 1500);
+                        } else {
+                            // Regular user - proceed to client dashboard
+                            performClientLogin();
                         }
                     })
                     .catch((error) => {
@@ -3861,30 +3821,42 @@ chat='true'>
         }
 
         // Load users from Firebase
-        function loadUsers() {
-            if (!database) {
-                console.error('Firebase not initialized');
+        async function loadUsers() {
+            if (!supabase) {
+                console.error('Supabase not initialized');
                 return;
             }
 
-            const usersRef = database.ref('users');
-            
-            usersRef.on('value', (snapshot) => {
-                usersCache = [];
-                const data = snapshot.val();
-                
-                if (data) {
-                    Object.keys(data).forEach(key => {
-                        usersCache.push({
-                            firebaseId: key,
-                            ...data[key]
-                        });
-                    });
+            const loadUserData = async () => {
+                const { data: users, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .order('created_timestamp', { ascending: false });
+
+                if (error) {
+                    console.error('Error loading users:', error);
+                    return;
                 }
-                
+
+                usersCache = users || [];
                 renderUserList();
                 updateUserStats();
-            });
+            };
+
+            // Initial load
+            await loadUserData();
+
+            // Subscribe to real-time changes
+            supabase
+                .channel('users-changes')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'users'
+                }, () => {
+                    loadUserData(); // Reload when changes occur
+                })
+                .subscribe();
         }
 
         // Update user statistics
@@ -3938,10 +3910,10 @@ chat='true'>
                             <p>${user.email}</p>
                         </div>
                         <div class="user-actions">
-                            <button class="user-action-btn" onclick="toggleUserStatus('${user.firebaseId}')">
+                            <button class="user-action-btn" onclick="toggleUserStatus(${user.id})">
                                 ${user.status === 'active' ? '⏸ Deactivate' : '▶ Activate'}
                             </button>
-                            <button class="user-action-btn danger" onclick="deleteUser('${user.firebaseId}', '${user.name.replace(/'/g, "\\'")}')">
+                            <button class="user-action-btn danger" onclick="deleteUser(${user.id}, '${user.name.replace(/'/g, "\\'")}')">
                                 🗑 Delete
                             </button>
                         </div>
@@ -3961,7 +3933,7 @@ chat='true'>
                         </div>
                         <div class="user-meta-item">
                             <span class="user-meta-label">Last Login</span>
-                            <span class="user-meta-value">${user.lastLogin || 'Never'}</span>
+                            <span class="user-meta-value">${user.last_login || 'Never'}</span>
                         </div>
                     </div>
                 </div>
@@ -3983,8 +3955,8 @@ chat='true'>
         async function createNewUser(event) {
             event.preventDefault();
 
-            if (!database) {
-                alert('❌ Firebase not configured');
+            if (!supabase) {
+                alert('❌ Supabase not configured');
                 return;
             }
 
@@ -3996,8 +3968,8 @@ chat='true'>
                 role: document.getElementById('newUserRole').value,
                 status: document.getElementById('newUserStatus').value,
                 created: new Date().toISOString().split('T')[0],
-                lastLogin: 'Never',
-                createdTimestamp: Date.now()
+                last_login: 'Never',
+                created_timestamp: Date.now()
             };
 
             // Check for duplicate username or email
@@ -4015,7 +3987,11 @@ chat='true'>
             }
 
             try {
-                await database.ref('users').push(newUser);
+                const { error } = await supabase
+                    .from('users')
+                    .insert([newUser]);
+
+                if (error) throw error;
                 
                 // Clear form
                 document.getElementById('createUserForm').reset();
@@ -4028,29 +4004,31 @@ chat='true'>
         }
 
         // Toggle user status
-        function toggleUserStatus(firebaseId) {
-            if (!database) return;
+        async function toggleUserStatus(userId) {
+            if (!supabase) return;
 
-            const user = usersCache.find(u => u.firebaseId === firebaseId);
+            const user = usersCache.find(u => u.id === userId);
             if (!user) return;
 
             const newStatus = user.status === 'active' ? 'inactive' : 'active';
             
-            database.ref('users/' + firebaseId).update({
-                status: newStatus
-            })
-            .then(() => {
-                alert(`✅ User status updated!\n\n${user.name} is now ${newStatus}.`);
-            })
-            .catch((error) => {
+            const { error } = await supabase
+                .from('users')
+                .update({ status: newStatus })
+                .eq('id', userId);
+
+            if (error) {
                 console.error('Error updating user:', error);
                 alert('❌ Error updating user status');
-            });
+                return;
+            }
+
+            alert(`✅ User status updated!\n\n${user.name} is now ${newStatus}.`);
         }
 
         // Delete user
-        function deleteUser(firebaseId, userName) {
-            if (!database) return;
+        async function deleteUser(userId, userName) {
+            if (!supabase) return;
 
             const confirmed = confirm(
                 `⚠️ Delete User Account?\n\n` +
@@ -4061,42 +4039,84 @@ chat='true'>
 
             if (!confirmed) return;
 
-            database.ref('users/' + firebaseId).remove()
-                .then(() => {
-                    alert(`✅ User deleted successfully!\n\n${userName} has been removed from the system.`);
-                })
-                .catch((error) => {
-                    console.error('Error deleting user:', error);
-                    alert('❌ Error deleting user. Please try again.');
-                });
-        }
+            const { error } = await supabase
+                .from('users')
+                .delete()
+                .eq('id', userId);
 
-        // Load announcements from Firebase
-        function loadAnnouncements() {
-            if (!database) {
-                console.error('Firebase not initialized');
+            if (error) {
+                console.error('Error deleting user:', error);
+                alert('❌ Error deleting user. Please try again.');
                 return;
             }
 
-            const messagesContainer = document.querySelector('#announcements .messages-container');
+            alert(`✅ User deleted successfully!\n\n${userName} has been removed from the system.`);
+        }
+
+        // Load announcements from Firebase
+        // Current active channel
+        let currentChannel = 'general-updates';
+
+        // Switch between channels
+        function switchChannel(channelName) {
+            currentChannel = channelName;
+            
+            // Update tab active states
+            document.querySelectorAll('.channel-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.channel-tab').classList.add('active');
+            
+            // Hide all channels
+            document.querySelectorAll('.announcements-channel').forEach(channel => {
+                channel.style.display = 'none';
+            });
+            
+            // Show selected channel
+            document.getElementById(`channel-${channelName}`).style.display = 'block';
+            
+            // Load messages for this channel if not already loaded
+            loadChannelMessages(channelName);
+        }
+
+        // Load messages for a specific channel
+        function loadChannelMessages(channelName) {
+            if (!supabase) {
+                console.error('Supabase not initialized');
+                return;
+            }
+
+            const messagesContainer = document.getElementById(`messages-${channelName}`);
             if (!messagesContainer) return;
 
-            // Listen for announcements in real-time
-            const announcementsRef = database.ref('announcements');
-            
-            announcementsRef.orderByChild('timestamp').on('value', (snapshot) => {
-                messagesContainer.innerHTML = '';
-                
-                const announcements = [];
-                snapshot.forEach((childSnapshot) => {
-                    announcements.push({
-                        id: childSnapshot.key,
-                        ...childSnapshot.val()
-                    });
-                });
+            // Load and subscribe to announcements in this channel in real-time
+            const loadMessages = async () => {
+                const { data: announcements, error } = await supabase
+                    .from('announcements')
+                    .select('*')
+                    .eq('channel', channelName)
+                    .order('timestamp', { ascending: false });
 
-                // Reverse to show newest first
-                announcements.reverse().forEach(announcement => {
+                if (error) {
+                    console.error('Error loading messages:', error);
+                    return;
+                }
+
+                messagesContainer.innerHTML = '';
+
+                if (!announcements || announcements.length === 0) {
+                    messagesContainer.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.5);">
+                            <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;">📢</div>
+                            <div style="font-size: 18px; margin-bottom: 8px;">No messages yet</div>
+                            <div style="font-size: 14px; opacity: 0.7;">Check back soon for updates</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Display messages (already sorted newest first)
+                announcements.forEach(announcement => {
                     const messageDiv = document.createElement('div');
                     messageDiv.className = 'message';
                     messageDiv.innerHTML = `
@@ -4107,121 +4127,191 @@ chat='true'>
                             <div class="message-header">
                                 <span class="message-author">Profit Insider Team</span>
                                 <span class="message-badge">Admin</span>
-                                <span class="message-timestamp">${announcement.timestampDisplay}</span>
+                                <span class="message-timestamp">${announcement.timestamp_display}</span>
                             </div>
                             <div class="message-body">
-                                <p><strong>${announcement.emoji} ${announcement.title}</strong></p>
+                                <p><strong>${announcement.emoji || '📢'} ${announcement.title}</strong></p>
                                 <p>${announcement.message}</p>
                             </div>
                             <div class="message-reactions">
-                                <div class="reaction">👍 ${announcement.reactions || 0}</div>
-                                <div class="reaction">🔥 ${announcement.reactionsFireCount || 0}</div>
+                                <div class="reaction" onclick="reactToMessage('${channelName}', ${announcement.id}, 'thumbsup')">
+                                    👍 <span id="reaction-${announcement.id}-thumbsup">${announcement.reaction_thumbsup || 0}</span>
+                                </div>
+                                <div class="reaction" onclick="reactToMessage('${channelName}', ${announcement.id}, 'fire')">
+                                    🔥 <span id="reaction-${announcement.id}-fire">${announcement.reaction_fire || 0}</span>
+                                </div>
+                                <div class="reaction" onclick="reactToMessage('${channelName}', ${announcement.id}, 'rocket')">
+                                    🚀 <span id="reaction-${announcement.id}-rocket">${announcement.reaction_rocket || 0}</span>
+                                </div>
                             </div>
                         </div>
                     `;
                     messagesContainer.appendChild(messageDiv);
                 });
-            });
+            };
 
+            // Initial load
+            loadMessages();
+
+            // Subscribe to real-time changes
+            const subscription = supabase
+                .channel(`announcements-${channelName}`)
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'announcements',
+                    filter: `channel=eq.${channelName}`
+                }, () => {
+                    loadMessages(); // Reload when changes occur
+                })
+                .subscribe();
+        }
+
+        // React to a message
+        async function reactToMessage(channelName, messageId, reactionType) {
+            if (!supabase) return;
+
+            const columnName = `reaction_${reactionType}`;
+            
+            // Get current announcement
+            const { data: announcement, error: fetchError } = await supabase
+                .from('announcements')
+                .select(columnName)
+                .eq('id', messageId)
+                .single();
+
+            if (fetchError) {
+                console.error('Error fetching announcement:', fetchError);
+                return;
+            }
+
+            // Increment reaction count
+            const currentCount = announcement[columnName] || 0;
+            const { error: updateError } = await supabase
+                .from('announcements')
+                .update({ [columnName]: currentCount + 1 })
+                .eq('id', messageId);
+
+            if (updateError) {
+                console.error('Error updating reaction:', updateError);
+                return;
+            }
+
+            // Update UI immediately
+            const reactionSpan = document.getElementById(`reaction-${messageId}-${reactionType}`);
+            if (reactionSpan) {
+                reactionSpan.textContent = currentCount + 1;
+            }
+        }
+
+
+        // Initialize - load general-updates channel by default
+        function loadAnnouncements() {
+            loadChannelMessages('general-updates');
             // Also update recent announcements in admin panel
             loadRecentAnnouncements();
         }
 
         // Load recent announcements for admin panel
-        function loadRecentAnnouncements() {
-            if (!database) return;
+        async function loadRecentAnnouncements() {
+            if (!supabase) return;
 
             const recentList = document.getElementById('recentAnnouncementsList');
             if (!recentList) return;
 
-            const announcementsRef = database.ref('announcements');
-            
-            announcementsRef.limitToLast(10).on('value', (snapshot) => {
-                recentList.innerHTML = '';
-                
-                const announcements = [];
-                snapshot.forEach((childSnapshot) => {
-                    announcements.push({
-                        id: childSnapshot.key,
-                        ...childSnapshot.val()
-                    });
-                });
+            // Load from all channels
+            const { data: announcements, error } = await supabase
+                .from('announcements')
+                .select('*')
+                .order('timestamp', { ascending: false })
+                .limit(10);
 
-                if (announcements.length === 0) {
-                    recentList.innerHTML = `
-                        <div style="text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
-                            <div style="font-size: 36px; margin-bottom: 12px; opacity: 0.3;">📢</div>
-                            <div style="font-size: 14px;">No announcements yet</div>
-                        </div>
-                    `;
-                    return;
-                }
+            if (error) {
+                console.error('Error loading recent announcements:', error);
+                return;
+            }
 
-                announcements.reverse().forEach(announcement => {
-                    const recentItem = document.createElement('div');
-                    recentItem.className = 'recent-item';
-                    recentItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; gap: 12px;';
-                    recentItem.innerHTML = `
-                        <div style="display: flex; gap: 16px; align-items: center; flex: 1;">
-                            <div class="recent-icon">${announcement.emoji}</div>
-                            <div class="recent-content">
-                                <div class="recent-title">${announcement.title}</div>
-                                <div class="recent-time">${announcement.timestampDisplay}</div>
-                            </div>
+            if (!announcements || announcements.length === 0) {
+                recentList.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
+                        <div style="font-size: 36px; margin-bottom: 12px; opacity: 0.3;">📢</div>
+                        <div style="font-size: 14px;">No announcements yet</div>
+                    </div>
+                `;
+                return;
+            }
+
+            recentList.innerHTML = '';
+            announcements.forEach(announcement => {
+                const recentItem = document.createElement('div');
+                recentItem.className = 'recent-item';
+                recentItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; gap: 12px;';
+                recentItem.innerHTML = `
+                    <div style="display: flex; gap: 16px; align-items: center; flex: 1;">
+                        <div class="recent-icon">${announcement.emoji || '📢'}</div>
+                        <div class="recent-content">
+                            <div class="recent-title">${announcement.title} <span style="color: rgba(255,215,0,0.6); font-size: 12px;">#${announcement.channel}</span></div>
+                            <div class="recent-time">${announcement.timestamp_display}</div>
                         </div>
-                        <button 
-                            onclick="deleteAnnouncement('${announcement.id}', '${announcement.title.replace(/'/g, "\\'")}')" 
-                            style="padding: 8px 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; color: #ef4444; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;"
-                            onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'; this.style.borderColor='rgba(239, 68, 68, 0.5)';"
-                            onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'; this.style.borderColor='rgba(239, 68, 68, 0.3)';"
-                        >
-                            🗑️ Delete
-                        </button>
-                    `;
-                    recentList.appendChild(recentItem);
-                });
+                    </div>
+                    <button 
+                        onclick="deleteAnnouncement('${announcement.channel}', ${announcement.id}, '${announcement.title.replace(/'/g, "\\'")}')" 
+                        style="padding: 8px 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; color: #ef4444; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;"
+                        onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'; this.style.borderColor='rgba(239, 68, 68, 0.5)';"
+                        onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'; this.style.borderColor='rgba(239, 68, 68, 0.3)';"
+                    >
+                        🗑️ Delete
+                    </button>
+                `;
+                recentList.appendChild(recentItem);
             });
         }
 
         // Delete announcement function
-        function deleteAnnouncement(announcementId, announcementTitle) {
-            if (!database) {
-                alert('❌ Firebase not configured');
+        async function deleteAnnouncement(channelName, announcementId, announcementTitle) {
+            if (!supabase) {
+                alert('❌ Supabase not configured');
                 return;
             }
 
             const confirmed = confirm(
                 `⚠️ Delete Announcement?\n\n` +
-                `Title: "${announcementTitle}"\n\n` +
+                `Title: "${announcementTitle}"\n` +
+                `Channel: #${channelName}\n\n` +
                 `This will permanently delete this announcement for all users.\n\n` +
                 `This action cannot be undone. Continue?`
             );
 
             if (!confirmed) return;
 
-            database.ref('announcements/' + announcementId).remove()
-                .then(() => {
-                    alert(`✅ Announcement deleted successfully!\n\n"${announcementTitle}" has been removed.`);
-                })
-                .catch((error) => {
-                    console.error('Error deleting announcement:', error);
-                    alert('❌ Error deleting announcement. Please try again.');
-                });
+            const { error } = await supabase
+                .from('announcements')
+                .delete()
+                .eq('id', announcementId);
+
+            if (error) {
+                console.error('Error deleting announcement:', error);
+                alert('❌ Error deleting announcement. Please try again.');
+                return;
+            }
+
+            alert(`✅ Announcement deleted successfully!\n\n"${announcementTitle}" has been removed from #${channelName}.`);
+            loadRecentAnnouncements(); // Reload the list
         }
 
         // Send announcement function
-        function sendAnnouncement(event) {
+        async function sendAnnouncement(event) {
             event.preventDefault();
 
-            if (!database) {
-                alert('❌ Firebase not configured. Please check your Firebase settings.');
+            if (!supabase) {
+                alert('❌ Supabase not configured. Please check your Supabase settings.');
                 return;
             }
             
             const title = document.getElementById('announcementTitle').value;
             const message = document.getElementById('announcementMessage').value;
             const emoji = document.getElementById('announcementEmoji').value || '📢';
-            const category = document.getElementById('announcementCategory').value;
+            const channel = document.getElementById('announcementChannel').value;
             
             // Get current timestamp
             const now = new Date();
@@ -4238,27 +4328,30 @@ chat='true'>
                 title: title,
                 message: message.replace(/\n/g, '<br>'),
                 emoji: emoji,
-                category: category,
+                channel: channel,
                 timestamp: Date.now(),
-                timestampDisplay: timeString,
-                reactions: 0,
-                reactionsFireCount: 0
+                timestamp_display: timeString,
+                reaction_thumbsup: 0,
+                reaction_fire: 0,
+                reaction_rocket: 0
             };
 
-            // Save to Firebase
-            const newAnnouncementRef = database.ref('announcements').push();
-            newAnnouncementRef.set(announcement)
-                .then(() => {
-                    // Clear form
-                    document.getElementById('announcementForm').reset();
-                    
-                    // Show success message
-                    alert('✅ Announcement sent successfully to all users!\n\n🌍 This announcement will appear on ALL devices in real-time!');
-                })
-                .catch((error) => {
-                    console.error('Error sending announcement:', error);
-                    alert('❌ Error sending announcement. Check console for details.');
-                });
+            // Save to Supabase
+            const { error } = await supabase
+                .from('announcements')
+                .insert([announcement]);
+
+            if (error) {
+                console.error('Error sending announcement:', error);
+                alert('❌ Error sending announcement. Check console for details.');
+                return;
+            }
+
+            // Clear form
+            document.getElementById('announcementForm').reset();
+            
+            // Show success message
+            alert(`✅ Announcement sent successfully!\n\nChannel: #${channel}\n\n📢 This announcement will appear on ALL devices in real-time!`);
         }
 
         // Load announcements when page loads
@@ -4389,19 +4482,17 @@ chat='true'>
                             </div>
 
                             <div class="form-group">
-                                <label for="announcementCategory">Category</label>
-                                <select id="announcementCategory" class="form-select">
-                                    <option value="update">Platform Update</option>
-                                    <option value="market">Market Alert</option>
-                                    <option value="feature">New Feature</option>
-                                    <option value="maintenance">Maintenance</option>
-                                    <option value="general">General</option>
+                                <label for="announcementChannel">Channel</label>
+                                <select id="announcementChannel" class="form-select">
+                                    <option value="general-updates">📢 general-updates</option>
+                                    <option value="algo-recaps">📊 algo-recaps</option>
+                                    <option value="algo-announcements">🔔 algo-announcements</option>
                                 </select>
                             </div>
                         </div>
 
                         <button type="submit" class="admin-btn admin-btn-primary" style="width: 100%;">
-                            Send Announcement to All Users
+                            Send Announcement
                         </button>
                     </form>
                 </div>
