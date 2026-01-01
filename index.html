@@ -2902,7 +2902,7 @@ chat='true'>
                 <div class="login-title">Algorithm Client Access</div>
                 <div class="login-subtitle">Premium Trading Platform</div>
             </div>
-            <form id="loginForm" onsubmit="return false;">
+            <form id="loginForm">
                 <div class="form-group">
                     <label for="username">Client ID</label>
                     <input type="text" id="username" placeholder="Enter your client ID" required>
@@ -3411,6 +3411,27 @@ chat='true'>
         const blackScreen = document.getElementById('blackScreen');
         const dashboard = document.getElementById('dashboard');
 
+        // Debug - check if elements exist
+        console.log('Login elements check:', {
+            loginForm: !!loginForm,
+            loginBtn: !!loginBtn,
+            loginText: !!loginText
+        });
+
+        if (!loginForm) {
+            console.error('ERROR: loginForm not found! DOM may not be ready.');
+        }
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('Form submitted! preventDefault called.');
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                console.log('Login attempt:', { username, passwordLength: password.length });
+
         // Create circuit board network
         function createCircuitBoard() {
             const width = window.innerWidth;
@@ -3639,6 +3660,7 @@ chat='true'>
                     });
             }
         });
+        } // Close if(loginForm) block
 
         // Perform client login with animation
         function performClientLogin() {
