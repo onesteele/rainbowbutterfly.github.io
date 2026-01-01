@@ -3842,11 +3842,35 @@ chat='true'>
 
         // Show user management section
         function showUserManagement() {
-            document.querySelector('.admin-content').style.display = 'none';
-            document.getElementById('adminUserManagementSection').classList.add('active');
+            console.log('🔧 showUserManagement called');
+            
+            const adminContent = document.querySelector('.admin-content');
+            const userMgmtSection = document.getElementById('adminUserManagementSection');
+            
+            console.log('Admin content element:', adminContent);
+            console.log('User management section:', userMgmtSection);
+            
+            if (!adminContent) {
+                console.error('❌ .admin-content not found!');
+                return;
+            }
+            
+            if (!userMgmtSection) {
+                console.error('❌ #adminUserManagementSection not found!');
+                return;
+            }
+            
+            adminContent.style.display = 'none';
+            userMgmtSection.classList.add('active');
+            
+            console.log('✅ User management section should now be visible');
+            console.log('Section classes:', userMgmtSection.className);
+            console.log('Section display:', window.getComputedStyle(userMgmtSection).display);
+            
             loadUsers();
         }
 
+        // Hide user management section
         // Hide user management section
         function hideUserManagement() {
             document.getElementById('adminUserManagementSection').classList.remove('active');
@@ -4390,6 +4414,28 @@ chat='true'>
         // Load announcements and users when DOM is ready
         loadAnnouncements();
         loadUsers(); // Load users for user management
+
+        // ============================================
+        // MAKE FUNCTIONS GLOBALLY ACCESSIBLE
+        // (Required for onclick handlers in HTML)
+        // ============================================
+        window.showUserManagement = showUserManagement;
+        window.hideUserManagement = hideUserManagement;
+        window.showAdminAnnouncements = showAdminAnnouncements;
+        window.hideAdminAnnouncements = hideAdminAnnouncements;
+        window.deleteUser = deleteUser;
+        window.toggleUserStatus = toggleUserStatus;
+        window.deleteAnnouncement = deleteAnnouncement;
+        window.reactToMessage = reactToMessage;
+        window.switchChannel = switchChannel;
+        window.navigateToPage = navigateToPage;
+        window.showVideoDetail = showVideoDetail;
+        window.logout = logout;
+        window.logoutAdmin = logoutAdmin;
+        window.openChatSupport = openChatSupport;
+        window.sendAnnouncement = sendAnnouncement;
+        window.createNewUser = createNewUser;
+        window.filterUserList = filterUserList;
 
         }); // End of DOMContentLoaded wrapper
     </script>
