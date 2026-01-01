@@ -2337,7 +2337,7 @@
         .avatar-icon {
             width: 36px;
             height: 36px;
-            background: #000000;
+            background: rgba(255, 215, 0, 0.1);
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -2351,6 +2351,20 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+        }
+
+        .avatar-icon-emoji {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            font-size: 24px;
+            line-height: 1;
         }
 
         /* Read-Only Input Notice */
@@ -3032,16 +3046,39 @@
             height: 56px;
             border-radius: 8px;
             overflow: hidden;
-            background: #000000;
+            background: rgba(255, 215, 0, 0.1);
             border: 2px solid rgba(255, 215, 0, 0.3);
             flex-shrink: 0;
-            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .profile-avatar img {
             width: 100%;
             height: 100%;
             object-fit: contain;
+        }
+
+        .profile-icon-display {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .profile-item-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-item-avatar .profile-icon-display {
+            font-size: 28px;
         }
 
         .profile-info {
@@ -3339,27 +3376,120 @@
             border-radius: 3px;
         }
 
+        /* ========================================
+           ICON PICKER
+           ======================================== */
+        
+        .icon-picker-display {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(26, 26, 26, 0.6);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon-picker-display:hover {
+            background: rgba(26, 26, 26, 0.8);
+            border-color: rgba(255, 215, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .selected-icon-preview {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 215, 0, 0.15);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .icon-picker-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .icon-picker-dropdown {
+            margin-top: 12px;
+            background: rgba(26, 26, 26, 0.9);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .icon-picker-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .icon-tab {
+            flex: 1;
+            padding: 10px 16px;
+            background: rgba(26, 26, 26, 0.6);
+            border: 2px solid rgba(255, 215, 0, 0.15);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .icon-tab:hover {
+            background: rgba(26, 26, 26, 0.8);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .icon-tab.active {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.5);
+            color: #FFD700;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .icon-option {
+            width: 100%;
+            aspect-ratio: 1;
+            padding: 12px;
+            background: rgba(26, 26, 26, 0.6);
+            border: 2px solid rgba(255, 215, 0, 0.15);
+            border-radius: 8px;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .icon-option:hover {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: scale(1.1);
+        }
+
+        .icon-option.selected {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.7);
+        }
+
     </style>
 
     <!-- Supabase Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/695452bda6d2071982ebf8aa/1jdom6d1g';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
-
 </head>
-
 <body>
     <!-- Animated Background -->
     <div class="background">
@@ -4279,6 +4409,31 @@ s0.parentNode.insertBefore(s1,s0);
             }, 600);
         }
 
+        // Open chat support widget
+        function openChatSupport() {
+            // Check if FreshworksWidget is available
+            if (typeof FreshworksWidget !== 'undefined') {
+                try {
+                    FreshworksWidget('open');
+                } catch (error) {
+                    console.error('Error opening chat widget:', error);
+                    // Fallback to email if chat widget fails
+                    window.open('mailto:support@profitinsider.com');
+                }
+            } else {
+                console.warn('Chat widget not loaded yet. Please wait a moment and try again.');
+                // Give it a moment to load, then try again
+                setTimeout(() => {
+                    if (typeof FreshworksWidget !== 'undefined') {
+                        FreshworksWidget('open');
+                    } else {
+                        // Final fallback to email
+                        alert('Chat support is loading. Please try again in a moment, or contact us at support@profitinsider.com');
+                    }
+                }, 1000);
+            }
+        }
+
         // Admin logout function
         function logoutAdmin() {
             document.getElementById('adminPage').classList.remove('visible');
@@ -4473,10 +4628,11 @@ s0.parentNode.insertBefore(s1,s0);
         // Create new user
         async function createNewUser(event) {
             event.preventDefault();
+            event.stopPropagation();
 
             if (!supabase) {
                 alert('❌ Supabase not configured');
-                return;
+                return false;
             }
 
             const newUser = {
@@ -4502,7 +4658,7 @@ s0.parentNode.insertBefore(s1,s0);
                 } else {
                     alert('❌ Email already exists. Please use a different email.');
                 }
-                return;
+                return false;
             }
 
             try {
@@ -4510,15 +4666,21 @@ s0.parentNode.insertBefore(s1,s0);
                     .from('users')
                     .insert([newUser]);
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error creating user:', error);
+                    alert(`❌ Error creating user: ${error.message || 'Please try again.'}`);
+                    return false;
+                }
                 
                 // Clear form
                 document.getElementById('createUserForm').reset();
                 
                 alert(`✅ User created successfully!\n\nName: ${newUser.name}\nUsername: ${newUser.username}\nRole: ${newUser.role}\nStatus: ${newUser.status}`);
+                return false;
             } catch (error) {
-                console.error('Error creating user:', error);
-                alert('❌ Error creating user. Please try again.');
+                console.error('Unexpected error creating user:', error);
+                alert('❌ Unexpected error creating user. Check console for details.');
+                return false;
             }
         }
 
@@ -4656,6 +4818,11 @@ s0.parentNode.insertBefore(s1,s0);
                 announcements.forEach(announcement => {
                     const messageDiv = document.createElement('div');
                     messageDiv.className = 'message';
+                    const authorName = announcement.author_name || 'Profit Insider Team';
+                    const authorIcon = announcement.author_icon || '💼';
+                    const avatarDisplay = authorIcon === 'PI' 
+                        ? '<img src="PIlogo.png" style="width: 24px; height: 24px; object-fit: contain;" />'
+                        : authorIcon;
                     
                     // Detect links in the message
                     const links = detectLinks(announcement.message);
@@ -4668,11 +4835,11 @@ s0.parentNode.insertBefore(s1,s0);
                     
                     messageDiv.innerHTML = `
                         <div class="message-avatar">
-                            <div class="avatar-icon"><img src="PIlogo.png" alt="Profit Insider Team"></div>
+                            <div class="avatar-icon-emoji">${avatarDisplay}</div>
                         </div>
                         <div class="message-content">
                             <div class="message-header">
-                                <span class="message-author">Profit Insider Team</span>
+                                <span class="message-author">${authorName}</span>
                                 <span class="message-badge">Admin</span>
                                 <span class="message-timestamp">${announcement.timestamp_display}</span>
                             </div>
@@ -4850,10 +5017,11 @@ s0.parentNode.insertBefore(s1,s0);
         // Send announcement function
         async function sendAnnouncement(event) {
             event.preventDefault();
+            event.stopPropagation();
 
             if (!supabase) {
                 alert('❌ Supabase not configured. Please check your Supabase settings.');
-                return;
+                return false;
             }
             
             const title = document.getElementById('announcementTitle').value;
@@ -4881,25 +5049,40 @@ s0.parentNode.insertBefore(s1,s0);
                 timestamp_display: timeString,
                 reaction_thumbsup: 0,
                 reaction_fire: 0,
-                reaction_rocket: 0
+                reaction_rocket: 0,
+                author_name: currentSelectedProfile.name,
+                author_icon: currentSelectedProfile.icon
             };
 
-            // Save to Supabase
-            const { error } = await supabase
-                .from('announcements')
-                .insert([announcement]);
+            try {
+                // Save to Supabase
+                const { error } = await supabase
+                    .from('announcements')
+                    .insert([announcement]);
 
-            if (error) {
-                console.error('Error sending announcement:', error);
-                alert('❌ Error sending announcement. Check console for details.');
-                return;
+                if (error) {
+                    console.error('Error sending announcement:', error);
+                    
+                    // Check if columns don't exist
+                    if (error.message && error.message.includes('column') && error.message.includes('does not exist')) {
+                        alert('❌ Database not set up for profiles yet.\n\nPlease run the SQL from PROFILE_ICONS_SETUP.md first.');
+                    } else {
+                        alert(`❌ Error sending announcement: ${error.message}`);
+                    }
+                    return false;
+                }
+
+                // Clear form
+                document.getElementById('announcementForm').reset();
+                
+                // Show success message
+                alert(`✅ Announcement sent successfully!\n\nChannel: #${channel}\n\n📢 This announcement will appear on ALL devices in real-time!`);
+                return false;
+            } catch (err) {
+                console.error('Unexpected error sending announcement:', err);
+                alert('❌ Unexpected error. Check console for details.');
+                return false;
             }
-
-            // Clear form
-            document.getElementById('announcementForm').reset();
-            
-            // Show success message
-            alert(`✅ Announcement sent successfully!\n\nChannel: #${channel}\n\n📢 This announcement will appear on ALL devices in real-time!`);
         }
 
         // Load announcements and users when DOM is ready
@@ -5029,12 +5212,50 @@ s0.parentNode.insertBefore(s1,s0);
         }
 
         // ============================================
+        // ICON PICKER FOR PROFILES
+        // ============================================
+        
+        function toggleIconPicker() {
+            const dropdown = document.getElementById('iconPickerDropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function showIconCategory(category) {
+            // Hide all icon grids
+            document.getElementById('peopleIcons').style.display = 'none';
+            document.getElementById('businessIcons').style.display = 'none';
+            document.getElementById('techIcons').style.display = 'none';
+            
+            // Show selected category
+            document.getElementById(category + 'Icons').style.display = 'grid';
+            
+            // Update tab states
+            document.getElementById('peopleTab').classList.remove('active');
+            document.getElementById('businessTab').classList.remove('active');
+            document.getElementById('techTab').classList.remove('active');
+            document.getElementById(category + 'Tab').classList.add('active');
+        }
+
+        function selectIcon(icon) {
+            document.getElementById('selectedIcon').value = icon;
+            
+            // Handle PI logo specially
+            if (icon === 'PI') {
+                document.getElementById('selectedIconPreview').innerHTML = '<img src="PIlogo.png" style="width: 32px; height: 32px; object-fit: contain;" />';
+            } else {
+                document.getElementById('selectedIconPreview').textContent = icon;
+            }
+            
+            document.getElementById('iconPickerDropdown').style.display = 'none';
+        }
+
+        // ============================================
         // ADMIN PROFILE MANAGEMENT
         // ============================================
         
         let currentSelectedProfile = {
             name: 'Profit Insider Team',
-            imageUrl: 'PIlogo.png'
+            icon: '💼'
         };
 
         function showProfileManager() {
@@ -5070,14 +5291,14 @@ s0.parentNode.insertBefore(s1,s0);
             defaultProfile.className = 'profile-item' + (isDefaultSelected ? ' selected' : '');
             defaultProfile.innerHTML = `
                 <div class="profile-item-avatar">
-                    <img src="PIlogo.png" alt="Default">
+                    <div class="profile-icon-display">💼</div>
                 </div>
                 <div class="profile-item-info">
                     <div class="profile-item-name">Profit Insider Team</div>
                     <div class="profile-item-meta">Default Profile</div>
                 </div>
                 <div class="profile-item-actions">
-                    <button class="profile-select-btn" onclick="selectProfile('Profit Insider Team', 'PIlogo.png')">
+                    <button class="profile-select-btn" onclick="selectProfile('Profit Insider Team', '💼')">
                         Select
                     </button>
                 </div>
@@ -5089,17 +5310,21 @@ s0.parentNode.insertBefore(s1,s0);
                 profiles.forEach(profile => {
                     const profileItem = document.createElement('div');
                     const isSelected = currentSelectedProfile.name === profile.name;
+                    const iconDisplay = profile.icon === 'PI' 
+                        ? '<img src="PIlogo.png" style="width: 28px; height: 28px; object-fit: contain;" />'
+                        : profile.icon || '👤';
+                    
                     profileItem.className = 'profile-item' + (isSelected ? ' selected' : '');
                     profileItem.innerHTML = `
                         <div class="profile-item-avatar">
-                            <img src="${profile.image_url || 'PIlogo.png'}" alt="${profile.name}">
+                            <div class="profile-icon-display">${iconDisplay}</div>
                         </div>
                         <div class="profile-item-info">
                             <div class="profile-item-name">${profile.name}</div>
                             <div class="profile-item-meta">Created ${new Date(profile.created_at).toLocaleDateString()}</div>
                         </div>
                         <div class="profile-item-actions">
-                            <button class="profile-select-btn" onclick="selectProfile('${profile.name.replace(/'/g, "\\'")}', '${profile.image_url || 'PIlogo.png'}')">
+                            <button class="profile-select-btn" onclick="selectProfile('${profile.name.replace(/'/g, "\\'")}', '${profile.icon || '👤'}')">
                                 Select
                             </button>
                             <button class="profile-delete-btn" onclick="deleteAnnouncementProfile(${profile.id}, '${profile.name.replace(/'/g, "\\'")}')">
@@ -5112,12 +5337,19 @@ s0.parentNode.insertBefore(s1,s0);
             }
         }
 
-        function selectProfile(name, imageUrl) {
-            currentSelectedProfile = { name, imageUrl };
+        function selectProfile(name, icon) {
+            currentSelectedProfile = { name, icon };
             
             // Update current profile display
             document.getElementById('currentProfileName').textContent = name;
-            document.getElementById('currentProfileImage').src = imageUrl;
+            
+            // Handle PI logo display
+            const iconElement = document.getElementById('currentProfileIcon');
+            if (icon === 'PI') {
+                iconElement.innerHTML = '<img src="PIlogo.png" style="width: 32px; height: 32px; object-fit: contain;" />';
+            } else {
+                iconElement.textContent = icon;
+            }
             
             // Update selected state in modal
             document.querySelectorAll('.profile-item').forEach(item => {
@@ -5130,40 +5362,56 @@ s0.parentNode.insertBefore(s1,s0);
 
         async function createAnnouncementProfile(event) {
             event.preventDefault();
+            event.stopPropagation();
 
             if (!supabase) {
                 alert('❌ Supabase not configured');
-                return;
+                return false;
             }
 
             const name = document.getElementById('profileName').value;
-            const imageUrl = document.getElementById('profileImageUrl').value || 'PIlogo.png';
+            const icon = document.getElementById('selectedIcon').value || '👤';
 
             const newProfile = {
                 name: name,
-                image_url: imageUrl,
+                icon: icon,
                 created_at: new Date().toISOString()
             };
 
-            const { data, error } = await supabase
-                .from('announcement_profiles')
-                .insert([newProfile])
-                .select()
-                .single();
+            try {
+                const { data, error } = await supabase
+                    .from('announcement_profiles')
+                    .insert([newProfile])
+                    .select()
+                    .single();
 
-            if (error) {
-                console.error('Error creating profile:', error);
-                alert('❌ Error creating profile. Please try again.');
-                return;
+                if (error) {
+                    console.error('Error creating profile:', error);
+                    
+                    // Check if table doesn't exist
+                    if (error.message && error.message.includes('relation') && error.message.includes('does not exist')) {
+                        alert('❌ Profile table not set up yet.\n\nPlease run the SQL from PROFILE_ICONS_SETUP.md first.');
+                    } else {
+                        alert(`❌ Error creating profile: ${error.message}`);
+                    }
+                    return false;
+                }
+
+                // Clear form
+                document.getElementById('createProfileForm').reset();
+                document.getElementById('selectedIcon').value = '👤';
+                document.getElementById('selectedIconPreview').textContent = '👤';
+                
+                // Reload profiles list
+                loadAnnouncementProfiles();
+                
+                alert(`✅ Profile created successfully!\n\nName: ${name}\nIcon: ${icon}\n\nYou can now select this profile when posting announcements.`);
+                return false;
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                alert('❌ Unexpected error creating profile. Check console for details.');
+                return false;
             }
-
-            // Clear form
-            document.getElementById('createProfileForm').reset();
-            
-            // Reload profiles list
-            loadAnnouncementProfiles();
-            
-            alert(`✅ Profile created successfully!\n\nName: ${name}\n\nYou can now select this profile when posting announcements.`);
         }
 
         async function deleteAnnouncementProfile(profileId, profileName) {
@@ -5191,7 +5439,7 @@ s0.parentNode.insertBefore(s1,s0);
 
             // If deleted profile was selected, switch to default
             if (currentSelectedProfile.name === profileName) {
-                selectProfile('Profit Insider Team', 'PIlogo.png');
+                selectProfile('Profit Insider Team', '💼');
             }
 
             loadAnnouncementProfiles();
@@ -5224,6 +5472,9 @@ s0.parentNode.insertBefore(s1,s0);
         window.selectProfile = selectProfile;
         window.createAnnouncementProfile = createAnnouncementProfile;
         window.deleteAnnouncementProfile = deleteAnnouncementProfile;
+        window.toggleIconPicker = toggleIconPicker;
+        window.showIconCategory = showIconCategory;
+        window.selectIcon = selectIcon;
 
         }); // End of DOMContentLoaded wrapper
     </script>
@@ -5316,7 +5567,7 @@ s0.parentNode.insertBefore(s1,s0);
                     <div class="profile-selector-container">
                         <div class="current-profile-display">
                             <div class="profile-avatar" id="currentProfileAvatar">
-                                <img src="PIlogo.png" alt="Profile" id="currentProfileImage">
+                                <div class="profile-icon-display" id="currentProfileIcon">💼</div>
                             </div>
                             <div class="profile-info">
                                 <div class="profile-name" id="currentProfileName">Profit Insider Team</div>
@@ -5575,14 +5826,74 @@ s0.parentNode.insertBefore(s1,s0);
                         </div>
 
                         <div class="form-group">
-                            <label for="profileImageUrl">Profile Image URL (optional)</label>
-                            <input 
-                                type="url" 
-                                id="profileImageUrl" 
-                                class="form-input" 
-                                placeholder="https://example.com/image.jpg"
-                            />
-                            <small>Paste an image URL or leave blank to use default logo</small>
+                            <label>Profile Icon</label>
+                            <input type="hidden" id="selectedIcon" value="👤" />
+                            
+                            <div class="icon-picker-display" onclick="toggleIconPicker()">
+                                <div class="selected-icon-preview" id="selectedIconPreview">👤</div>
+                                <div class="icon-picker-label">Click to choose icon</div>
+                            </div>
+
+                            <div class="icon-picker-dropdown" id="iconPickerDropdown" style="display: none;">
+                                <div class="icon-picker-tabs">
+                                    <button type="button" class="icon-tab active" onclick="showIconCategory('people')" id="peopleTab">
+                                        👥 People
+                                    </button>
+                                    <button type="button" class="icon-tab" onclick="showIconCategory('business')" id="businessTab">
+                                        💼 Business
+                                    </button>
+                                    <button type="button" class="icon-tab" onclick="showIconCategory('tech')" id="techTab">
+                                        💻 Tech
+                                    </button>
+                                </div>
+
+                                <div class="icon-grid" id="peopleIcons">
+                                    <button type="button" class="icon-option" onclick="selectIcon('💼')">💼</button>
+                                    <button type="button" class="icon-option pi-logo-option" onclick="selectIcon('PI')">
+                                        <img src="PIlogo.png" alt="PI" style="width: 28px; height: 28px; object-fit: contain;" />
+                                    </button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('👤')">👤</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('👨')">👨</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('👩')">👩</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🧑')">🧑</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('👨‍💼')">👨‍💼</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('👩‍💼')">👩‍💼</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('👨‍💻')">👨‍💻</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('👩‍💻')">👩‍💻</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🧑‍💼')">🧑‍💼</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🧑‍💻')">🧑‍💻</button>
+                                </div>
+
+                                <div class="icon-grid" id="businessIcons" style="display: none;">
+                                    <button type="button" class="icon-option" onclick="selectIcon('💼')">💼</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('📊')">📊</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('📈')">📈</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('💰')">💰</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('💎')">💎</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🎯')">🎯</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('📱')">📱</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('💡')">💡</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🚀')">🚀</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('⚡')">⚡</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🔥')">🔥</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('⭐')">⭐</button>
+                                </div>
+
+                                <div class="icon-grid" id="techIcons" style="display: none;">
+                                    <button type="button" class="icon-option" onclick="selectIcon('💻')">💻</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('⚙️')">⚙️</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🔧')">🔧</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🛠️')">🛠️</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('📡')">📡</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🖥️')">🖥️</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('⌨️')">⌨️</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🖱️')">🖱️</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🔌')">🔌</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('💾')">💾</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('📟')">📟</button>
+                                    <button type="button" class="icon-option" onclick="selectIcon('🎮')">🎮</button>
+                                </div>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn-primary">Create Profile</button>
