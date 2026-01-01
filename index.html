@@ -3304,6 +3304,15 @@ chat='true'>
     </div>
 
     <script>
+        // Wait for DOM and Supabase library to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Supabase library is loaded
+            if (typeof window.supabase === 'undefined') {
+                console.error('❌ Supabase library not loaded! Please check your internet connection.');
+                alert('Failed to load required libraries. Please refresh the page.');
+                return;
+            }
+
         // ============================================
         // SUPABASE CONFIGURATION
         // ============================================
@@ -3411,26 +3420,8 @@ chat='true'>
         const blackScreen = document.getElementById('blackScreen');
         const dashboard = document.getElementById('dashboard');
 
-        // Debug - check if elements exist
-        console.log('Login elements check:', {
-            loginForm: !!loginForm,
-            loginBtn: !!loginBtn,
-            loginText: !!loginText
-        });
-
-        if (!loginForm) {
-            console.error('ERROR: loginForm not found! DOM may not be ready.');
-        }
-
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                console.log('Form submitted! preventDefault called.');
-                
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-
-                console.log('Login attempt:', { username, passwordLength: password.length });
+        // Debug logging
+        console.log('✅ Login form elements found');
 
         // Create circuit board network
         function createCircuitBoard() {
@@ -3552,8 +3543,12 @@ chat='true'>
 
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            console.log('✅ Form submitted! preventDefault called.');
+            
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+
+            console.log('Login attempt - Username:', username, 'Password length:', password.length);
 
             if (username && password) {
                 // Check for admin credentials
@@ -3660,7 +3655,6 @@ chat='true'>
                     });
             }
         });
-        } // Close if(loginForm) block
 
         // Perform client login with animation
         function performClientLogin() {
@@ -4393,11 +4387,11 @@ chat='true'>
             alert(`✅ Announcement sent successfully!\n\nChannel: #${channel}\n\n📢 This announcement will appear on ALL devices in real-time!`);
         }
 
-        // Load announcements when page loads
-        window.addEventListener('DOMContentLoaded', function() {
-            loadAnnouncements();
-            loadUsers(); // Load users for user management
-        });
+        // Load announcements and users when DOM is ready
+        loadAnnouncements();
+        loadUsers(); // Load users for user management
+
+        }); // End of DOMContentLoaded wrapper
     </script>
 
     <!-- Admin Page -->
