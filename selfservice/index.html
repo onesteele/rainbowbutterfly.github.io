@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Service Account Creation - Profit Insider</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #0a0a0a;
+            --gold: #FFD700;
+            --gold-light: #FFC107;
+            --success-green: #10b981;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--black);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 193, 7, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.04) 0%, transparent 40%);
+            opacity: 0.8;
+        }
+
+        .background::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(255, 215, 0, 0.03) 0px, transparent 1px, transparent 2px, rgba(255, 215, 0, 0.03) 3px),
+                repeating-linear-gradient(90deg, rgba(255, 215, 0, 0.03) 0px, transparent 1px, transparent 2px, rgba(255, 215, 0, 0.03) 3px);
+            animation: backgroundPulse 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* Card Styles */
+        .signup-card, .success-card {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(18, 18, 18, 0.95);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 100px rgba(255, 215, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            animation: cardEntrance 0.8s ease;
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .success-card {
+            display: none;
+        }
+
+        .success-card.active {
+            display: block;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .pi-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .pi-icon img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .signup-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .signup-subtitle {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        /* Form Styles */
+        .signup-form {
+            margin-top: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(255, 215, 0, 0.5);
+            background: rgba(26, 26, 26, 1);
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Button Styles */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            border: none;
+            border-radius: 12px;
+            color: var(--black);
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 40px -10px rgba(255, 215, 0, 0.7);
+            transition: all 0.3s ease;
+            margin-top: 32px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 50px -10px rgba(255, 215, 0, 0.9);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success Screen Styles */
+        .success-icon {
+            text-align: center;
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: successPop 0.6s ease;
+        }
+
+        @keyframes successPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--success-green), #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .success-message {
+            text-align: center;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        /* Credentials Display */
+        .credentials-box {
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .credential-item {
+            margin-bottom: 24px;
+        }
+
+        .credential-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .credential-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .credential-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gold);
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .warning-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .warning-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .warning-text strong {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* Login Button */
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            color: var(--gold);
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(10, 10, 10, 0.2);
+            border-top-color: #0a0a0a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid rgba(220, 38, 38, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #ef4444;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .signup-card, .success-card {
+                padding: 32px 24px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .signup-title {
+                font-size: 28px;
+            }
+
+            .success-title {
+                font-size: 28px;
+            }
+
+            .credential-value {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    
+    <div class="container">
+        <!-- Signup Form Card -->
+        <div class="signup-card" id="signupCard">
+            <div class="logo-section">
+                <div class="pi-icon">
+                    <img src="PIlogo.png" alt="Profit Insider Logo">
+                </div>
+                <div class="signup-title">Create Your Account</div>
+                <div class="signup-subtitle">Self-Service Client Portal Registration</div>
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+
+            <form class="signup-form" id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" placeholder="Smith" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="john.smith@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientId">Choose Your Client ID</label>
+                    <input type="text" id="clientId" placeholder="johnsmith123" required 
+                           pattern="[a-zA-Z0-9_\-]+" 
+                           title="Only letters, numbers, underscores, and hyphens allowed">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Choose Your Password</label>
+                    <input type="password" id="password" placeholder="Create a secure password" required minlength="8">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter your password" required minlength="8">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span id="submitText">Create Account</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Success Card (Hidden Initially) -->
+        <div class="success-card" id="successCard">
+            <div class="success-icon">✅</div>
+            <div class="success-title">Account Created!</div>
+            <div class="success-message">
+                Your Profit Insider client portal account has been successfully created.
+                Save these credentials securely - you'll need them to log in.
+            </div>
+
+            <div class="warning-box">
+                <div class="warning-icon">⚠️</div>
+                <div class="warning-text">
+                    <strong>Important:</strong> Take a screenshot of this page or write down your credentials now. 
+                    You won't be able to view them again.
+                </div>
+            </div>
+
+            <div class="credentials-box">
+                <div class="credential-item">
+                    <div class="credential-label">Your Client ID</div>
+                    <div class="credential-value" id="displayClientId">-</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-label">Your Password</div>
+                    <div class="credential-value" id="displayPassword">-</div>
+                </div>
+            </div>
+
+            <a href="https://clientportal.profit-insiders.com" class="login-btn">
+                🚀 Go to Login Page
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SUPABASE CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'https://ztuwblktrssupogcxamz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0dXdibGt0cnNzdXBvZ2N4YW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcyOTMyOTgsImV4cCI6MjA4Mjg2OTI5OH0.9HtyuKU4h8nBOHsp-M1S21y2EU3_rurdyj3w_pBu7sc';
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ============================================
+        // FORM SUBMISSION
+        // ============================================
+        const signupForm = document.getElementById('signupForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const errorMessage = document.getElementById('errorMessage');
+        const signupCard = document.getElementById('signupCard');
+        const successCard = document.getElementById('successCard');
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form values
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const clientId = document.getElementById('clientId').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                showError('Passwords do not match. Please try again.');
+                return;
+            }
+
+            // Validate password strength
+            if (password.length < 8) {
+                showError('Password must be at least 8 characters long.');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitText.innerHTML = '<div class="loading-spinner"></div>';
+            errorMessage.classList.remove('active');
+
+            try {
+                // Check if client ID already exists
+                const { data: existingUser, error: checkError } = await supabaseClient
+                    .from('users')
+                    .select('username')
+                    .eq('username', clientId)
+                    .maybeSingle();
+
+                if (checkError) {
+                    throw new Error('Database error: ' + checkError.message);
+                }
+
+                if (existingUser) {
+                    showError('This Client ID is already taken. Please choose a different one.');
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Create Account';
+                    return;
+                }
+
+                // Check if email already exists
+                const { data: existingEmail, error: emailCheckError } = await supabaseClient
+                    .from('users')
+                    .select('email')
+                    .eq('email', email)
+                    .maybeSingle();
+
+                if (emailCheckError) {
+                    throw new Error('Database error: ' + emailCheckError.message);
+                }
+
+                if (existingEmail) {
+                    showError('This email is already registered. Please use a different email or contact support.');
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Create Account';
+                    return;
+                }
+
+                // Create new user
+                const fullName = `${firstName} ${lastName}`;
+                const now = new Date().toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+
+                const { data: newUser, error: insertError } = await supabaseClient
+                    .from('users')
+                    .insert([{
+                        username: clientId,
+                        password: password,
+                        name: fullName,
+                        email: email,
+                        role: 'client',
+                        status: 'active',
+                        last_login: 'Never'
+                    }])
+                    .select();
+
+                if (insertError) {
+                    throw new Error('Failed to create account: ' + insertError.message);
+                }
+
+                console.log('✅ Account created successfully:', newUser);
+
+                // Show success screen
+                showSuccessScreen(clientId, password);
+
+            } catch (error) {
+                console.error('Error creating account:', error);
+                showError(error.message || 'An error occurred. Please try again.');
+                submitBtn.disabled = false;
+                submitText.textContent = 'Create Account';
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('active');
+            setTimeout(() => {
+                errorMessage.classList.remove('active');
+            }, 5000);
+        }
+
+        function showSuccessScreen(clientId, password) {
+            // Populate credentials
+            document.getElementById('displayClientId').textContent = clientId;
+            document.getElementById('displayPassword').textContent = password;
+
+            // Fade out signup card
+            signupCard.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            signupCard.style.opacity = '0';
+            signupCard.style.transform = 'scale(0.95)';
+
+            // Show success card after fade
+            setTimeout(() => {
+                signupCard.style.display = 'none';
+                successCard.classList.add('active');
+            }, 600);
+        }
+    </script>
+</body>
+</html>
