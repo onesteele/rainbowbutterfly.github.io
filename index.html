@@ -8634,65 +8634,8 @@
     var Tawk_API = Tawk_API || {};
     var Tawk_LoadStart = new Date();
     
-    // Set embedded mode and container for Support page
+    // Set embedded mode for Support page container
     Tawk_API.embedded = 'tawk_695452bda6d2071982ebf8aa';
-    
-    // Customize appearance to fit container
-    Tawk_API.customStyle = {
-        visibility : {
-            desktop : {
-                position : 'br',
-                xOffset : 0,
-                yOffset : 0
-            },
-            mobile : {
-                position : 'br',
-                xOffset : 0,
-                yOffset : 0
-            }
-        }
-    };
-
-    // Hide inline widget on Support page, show embedded widget
-    Tawk_API.onLoad = function(){
-        // Check if we're on the support page
-        const supportPage = document.getElementById('support');
-        const isOnSupportPage = supportPage && supportPage.classList.contains('active');
-        
-        if (isOnSupportPage) {
-            // Hide the inline floating widget on support page
-            Tawk_API.hideWidget();
-        } else {
-            // Show inline widget on all other pages
-            Tawk_API.showWidget();
-        }
-    };
-
-    // Monitor page changes to show/hide widget appropriately
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.attributeName === 'class') {
-                const supportPage = document.getElementById('support');
-                const isOnSupportPage = supportPage && supportPage.classList.contains('active');
-                
-                if (typeof Tawk_API !== 'undefined' && Tawk_API.hideWidget && Tawk_API.showWidget) {
-                    if (isOnSupportPage) {
-                        Tawk_API.hideWidget();
-                    } else {
-                        Tawk_API.showWidget();
-                    }
-                }
-            }
-        });
-    });
-
-    // Start observing all pages for class changes
-    document.addEventListener('DOMContentLoaded', function() {
-        const pages = document.querySelectorAll('.page');
-        pages.forEach(function(page) {
-            observer.observe(page, { attributes: true });
-        });
-    });
     
     (function(){
         var s1 = document.createElement("script");
