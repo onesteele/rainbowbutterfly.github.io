@@ -8634,9 +8634,6 @@
     var Tawk_API = Tawk_API || {};
     var Tawk_LoadStart = new Date();
     
-    // Set embedded mode for Support page container
-    Tawk_API.embedded = 'tawk_695452bda6d2071982ebf8aa';
-    
     (function(){
         var s1 = document.createElement("script");
         var s0 = document.getElementsByTagName("script")[0];
@@ -8648,6 +8645,20 @@
     })();
     </script>
     <!--End of Tawk.to Script-->
+
+    <!--Start of Tawk.to Embedded Widget for Support Page-->
+    <script type="text/javascript">
+    // Separate embedded widget for Support page container
+    document.addEventListener('DOMContentLoaded', function() {
+        const supportPageContainer = document.getElementById('tawk_695452bda6d2071982ebf8aa');
+        if (supportPageContainer) {
+            // Create embedded instance for the support page container
+            var Tawk_API_Embedded = Tawk_API_Embedded || {};
+            Tawk_API_Embedded.embedded = 'tawk_695452bda6d2071982ebf8aa';
+        }
+    });
+    </script>
+    <!--End of Tawk.to Embedded Widget-->
 
 </body>
 </html>
